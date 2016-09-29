@@ -141,19 +141,19 @@ router.get('/users', async function (ctx, next) {
     const pageCount = Math.ceil(count / ctx.query.limit);
 
     if (ctx.is('json')) {
-      ctx.render('users', {
-        users,
-        pageCount,
-        itemCount,
-        pages: paginate.getArrayPages(ctx)(3, pageCount, ctx.query.page)
-      });
-    } else {
       // inspired by Stripe's API response for list objects
       ctx.body = {
         object: 'list',
         has_more: paginate.hasNextPages(ctx)(pageCount),
         data: results
       };
+    } else {
+      ctx.render('users', {
+        users,
+        pageCount,
+        itemCount,
+        pages: paginate.getArrayPages(ctx)(3, pageCount, ctx.query.page)
+      });
     }
 
   } catch (err) {
