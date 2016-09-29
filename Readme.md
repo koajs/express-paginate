@@ -1,47 +1,41 @@
 
-# express-paginate
+# ctx-paginate
 
 [![NPM Version][npm-image]][npm-url]
 [![NPM Downloads][downloads-image]][downloads-url]
-[![Build Status][travis-image]][travis-url]
-[![Test Coverage][coveralls-image]][coveralls-url]
 [![MIT License][license-image]][license-url]
 [![Slack][slack-image]][slack-url]
 
-> Node.js pagination middleware and view helpers. To be used in combination with database pagination plugins such as [mongoose-paginate](https://github.com/edwardhotchkiss/mongoose-paginate).  This module was created namely for use with [Eskimo](http://eskimo.io).
-
-**v0.2.0+**: As of `v0.2.0`, we now allow you to pass `?limit=0` to get infinite (all) results.  This may impose security or performance issues for your application, so we suggest you to write a quick middleware fix such as the one below, or use rate limiting middleware to prevent abuse.
-
-```js
-app.all(function(req, res, next) {
-  // set default or minimum is 10 (as it was prior to v0.2.0)
-  if (req.query.limit <= 10) req.query.limit = 10;
-  next();
-});
-```
+> Koa pagination middleware and view helpers.
 
 
 ## Install
 
 ```bash
-npm install -S express-paginate
+npm install -s koa-ctx-paginate
+```
+
+
+## Usage
+
+> Import every method:
+
+```js
+import * as paginate from 'koa-ctx-paginate';
+```
+
+> Import selective methods:
+
+```js
+import { middleware } from 'koa-ctx-paginate';
 ```
 
 
 ## API
 
-```js
-var paginate = require('express-paginate');
-```
-
-### paginate
-
-This creates a new instance of `express-paginate`.
-
-
 ### paginate.middleware(limit, maxLimit)
 
-This middleware validates and supplies default values to `req.skip` (an alias of `req.offset`, which can be used to skip or offset a number of records for pagination, e.g. with Mongoose you would do `Model.find().skip(req.skip)`), `req.query.limit`, `req.query.page`, `res.locals.paginate`, `res.locals.hasPreviousPages`, and `res.locals.hasNextPages`.
+This middleware validates and supplies default values to `ctx.paginate.skip` (an alias of `ctx.paginate.offset`, which can be used to skip or offset a number of records for pagination, e.g. with Mongoose you would do `Model.find().skip(ctx.paginate.skip)`), `ctx.query.limit`, `ctx.query.page`, `ctx.state.paginate`, `ctx.state.hasPreviousPages`, and `ctx.state.hasNextPages`.
 
 #### Arguments
 
@@ -49,19 +43,19 @@ This middleware validates and supplies default values to `req.skip` (an alias of
 * `maxLimit` a Number to restrict the number of results returned to per page (defaults to `50`) &ndash; through this, users will not be able to override this limit (e.g. they can't pass `?limit=10000` and crash your server)
 
 
-### paginate.href(req)
+### paginate.href(ctx)
 
-When you use the `paginate` middleware, it injects a view helper function called `paginate.href` as `res.locals.paginate`, which you can use in your views for paginated hyperlinks (e.g. as the `href` in `<a>Prev</a>` or `<a>Next</a>`).
+When you use the `paginate` middleware, it injects a view helper function called `paginate.href` as `ctx.state.paginate`, which you can use in your views for paginated hyperlinks (e.g. as the `href` in `<a>Prev</a>` or `<a>Next</a>`).
 
-By default, the view helper `paginate.href` is already executed with the inherited `req` variable, therefore it becomes a function capable of returning a String when executed.
+By default, the view helper `paginate.href` is already executed with the inherited `ctx` variable, therefore it becomes a function capable of returning a String when executed.
 
-When executed with `req`, it will return a function with two optional arguments, `prev` (Boolean) and `params` (String).
+When executed with `ctx`, it will return a function with two optional arguments, `prev` (Boolean) and `params` (String).
 
 The argument `prev` is a Boolean and is completely optional (defaults to `false`).
 
 The argument `params` is an Object and is completely optional.
 
-Pass `true` as the value for `prev` when you want to create a `<button>` or `<a>` that points to the previous page (e.g. it would generate a URL such as the one in the `href` attribute of `<a href="/users?page=1&limit=10">Prev</a>` if `req.query.page` is `2`).
+Pass `true` as the value for `prev` when you want to create a `<button>` or `<a>` that points to the previous page (e.g. it would generate a URL such as the one in the `href` attribute of `<a href="/users?page=1&limit=10">Prev</a>` if `ctx.query.page` is `2`).
 
 Pass an object for the value of `params` when you want to override querystring parameters &ndash; such as for filtering and sorting (e.g. it would generate a URL such as the one in the `href` attribute of `<a href="/users?page=1&limit=10&sort=name">Sort By Name</a>` if `params` is equal to `{ sort: 'name' }`.
 
@@ -71,44 +65,44 @@ Note that if you pass only one argument with a type of Object, then it will gene
 
 #### Arguments
 
-* `req` (**required**) &ndash; the request object returned from Express middleware invocation
+* `ctx` (**required**) &ndash; the request object returned from Koa middleware invocation
 
-#### Returned function arguments when invoked with `req`
+#### Returned function arguments when invoked with `ctx`
 
 * `prev` (optional) &ndash; a Boolean to determine whether or not to increment the hyperlink returned by `1` (e.g. for "Next" page links)
-* `params` (optional) &ndash; an Object of querystring parameters that will override the current querystring in `req.query` (note that this will also override the `page` querystring value if `page` is present as a key in the `params` object) (e.g. if you want to make a link that allows the user to change the current querystring to sort by name, you would have `params` equal to `{ sort: 'name' }`)
+* `params` (optional) &ndash; an Object of querystring parameters that will override the current querystring in `ctx.query` (note that this will also override the `page` querystring value if `page` is present as a key in the `params` object) (e.g. if you want to make a link that allows the user to change the current querystring to sort by name, you would have `params` equal to `{ sort: 'name' }`)
 
 ### paginate.hasPreviousPages
 
-When you use the `paginate` middleware, it injects a view helper Boolean called `hasPreviousPages` as `res.locals.hasPreviousPages`, which you can use in your views for generating pagination `<a>`'s or `<button>`'s &ndash; this utilizes `req.query.page > 1` to determine the Boolean's resulting value (representing if the query has a previous page of results)
+When you use the `paginate` middleware, it injects a view helper Boolean called `hasPreviousPages` as `ctx.state.hasPreviousPages`, which you can use in your views for generating pagination `<a>`'s or `<button>`'s &ndash; this utilizes `ctx.query.page > 1` to determine the Boolean's resulting value (representing if the query has a previous page of results)
 
 
-### paginate.hasNextPages(req)
+### paginate.hasNextPages(ctx)
 
-When you use the `paginate` middleware, it injects a view helper function called `hasNextPages` as `res.locals.hasPreviousPages`, which you can use in your views for generating pagination `<a>`'s or `<button>`'s &ndash; if the function is executed, it returns a Boolean value (representing if the query has another page of results)
+When you use the `paginate` middleware, it injects a view helper function called `hasNextPages` as `ctx.state.hasPreviousPages`, which you can use in your views for generating pagination `<a>`'s or `<button>`'s &ndash; if the function is executed, it returns a Boolean value (representing if the query has another page of results)
 
-By default, the view helper `paginate.hasNextPages` is already executed with the inherited `req` variable, therefore it becomes a function capable of returning a Boolean when executed.
+By default, the view helper `paginate.hasNextPages` is already executed with the inherited `ctx` variable, therefore it becomes a function capable of returning a Boolean when executed.
 
-When executed with `req`, it will return a function that accepts two required arguments called `pageCount` and `resultsCount`.
+When executed with `ctx`, it will return a function that accepts two required arguments called `pageCount` and `resultsCount`.
 
 #### Arguments
 
-* `req` (**required**) &ndash; the request object returned from Express middleware invocation
+* `ctx` (**required**) &ndash; the request object returned from Koa middleware invocation
 
-#### Returned function arguments when invoked with `req`
+#### Returned function arguments when invoked with `ctx`
 
 * `pageCount` (**required**) &ndash; a Number representing the total number of pages for the given query executed on the page
 
-### paginate.getArrayPages(req)
+### paginate.getArrayPages(ctx)
 
 Get all the page urls with limit.
 ![petronas contest 2015-10-29 12-35-52](https://cloud.githubusercontent.com/assets/3213579/10810997/a5b0b190-7e39-11e5-9cca-fb00a2142640.png)
 
 #### Arguments
 
-* `req` (**required**) &ndash; the request object returned from Express middleware invocation
+* `ctx` (**required**) &ndash; the request object returned from Koa middleware invocation
 
-#### Returned function arguments when invoked with `req`
+#### Returned function arguments when invoked with `ctx`
 
 * `limit` (**optional**) &ndash; Default: 3, a Number representing the total number of pages for the given query executed on the page.
 * `pageCount` (**required**) &ndash; a Number representing the total number of pages for the given query executed on the page.
@@ -121,58 +115,61 @@ Get all the page urls with limit.
 
 // # app.js
 
-var express = require('express');
-var paginate = require('express-paginate');
-var app = express();
+import koa from 'koa';
+import Router from 'koa-router';
+import * as paginate from 'koa-ctx-paginate';
+
+// e.g. `Users` is a database model created with Mongoose
+import { Users } from '../models';
+
+const app = koa();
+const router = new Router();
 
 // keep this before all routes that will use pagination
 app.use(paginate.middleware(10, 50));
 
-app.get('/users', function(req, res, next) {
+// let's get paginated list of users
+router.get('/users', async function (ctx, next) {
 
-  //
-  // TODO: The documentation has changed for `mongoose-paginate`
-  // as the original author unpublished and then published it (not sure why)
-  // but the API has changed, so this example is no longer relevant or accurate
-  // see <https://github.com/edwardhotchkiss/mongoose-paginate>
-  //
-  // This example assumes you've previously defined `Users`
-  // as `var Users = db.model('Users')` if you are using `mongoose`
-  // and that you've added the Mongoose plugin `mongoose-paginate`
-  // to the Users model via `User.plugin(require('mongoose-paginate'))`
-  Users.paginate({}, { page: req.query.page, limit: req.query.limit }, function(err, users, pageCount, itemCount) {
+  try {
 
-    if (err) return next(err);
+    const [ results, itemCount ] = await Promise.all([
+      Users.find({}).limit(ctx.query.limit).skip(ctx.paginate.skip).lean().exec(),
+      Users.count({})
+    ]);
 
-    res.format({
-      html: function() {
-        res.render('users', {
-          users: users,
-          pageCount: pageCount,
-          itemCount: itemCount,
-          pages: paginate.getArrayPages(req)(3, pageCount, req.query.page)
-        });
-      },
-      json: function() {
-        // inspired by Stripe's API response for list objects
-        res.json({
-          object: 'list',
-          has_more: paginate.hasNextPages(req)(pageCount),
-          data: users
-        });
-      }
-    });
+    const pageCount = Math.ceil(count / ctx.query.limit);
 
-  });
+    if (ctx.is('json')) {
+      ctx.render('users', {
+        users,
+        pageCount,
+        itemCount,
+        pages: paginate.getArrayPages(ctx)(3, pageCount, ctx.query.page)
+      });
+    } else {
+      // inspired by Stripe's API response for list objects
+      ctx.body = {
+        object: 'list',
+        has_more: paginate.hasNextPages(ctx)(pageCount),
+        data: results
+      };
+    }
+
+  } catch (err) {
+    ctx.throw(err);
+  }
 
 });
+
+app.use(router.routes());
 
 app.listen(3000);
 ```
 
-```jade
+```pug
 
-//- users.jade
+//- users.pug
 
 h1 Users
 
@@ -193,9 +190,9 @@ ul
 include _paginate
 ```
 
-```jade
+```pug
 
-//- _paginate.jade
+//- _paginate.pug
 
 //- This examples makes use of Bootstrap 3.x pagination classes
 
@@ -223,14 +220,10 @@ if paginate.hasPreviousPages || paginate.hasNextPages(pageCount)
 [MIT][license-url]
 
 
-[npm-image]: https://img.shields.io/npm/v/express-paginate.svg?style=flat
-[npm-url]: https://npmjs.org/package/express-paginate
-[travis-image]: https://img.shields.io/travis/expressjs/express-paginate.svg?style=flat
-[travis-url]: https://travis-ci.org/expressjs/express-paginate
-[coveralls-image]: https://img.shields.io/coveralls/expressjs/express-paginate.svg?style=flat
-[coveralls-url]: https://coveralls.io/r/expressjs/express-paginate?branch=master
-[downloads-image]: http://img.shields.io/npm/dm/express-paginate.svg?style=flat
-[downloads-url]: https://npmjs.org/package/express-paginate
+[npm-image]: https://img.shields.io/npm/v/koa-ctx-paginate.svg?style=flat
+[npm-url]: https://npmjs.org/package/koa-ctx-paginate
+[downloads-image]: http://img.shields.io/npm/dm/koa-ctx-paginate.svg?style=flat
+[downloads-url]: https://npmjs.org/package/koa-ctx-paginate
 [license-image]: http://img.shields.io/badge/license-MIT-blue.svg?style=flat
 [license-url]: LICENSE
 [slack-url]: http://slack.eskimo.io/
