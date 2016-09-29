@@ -226,5 +226,5 @@ if paginate.hasPreviousPages || paginate.hasNextPages(pageCount)
 [downloads-url]: https://npmjs.org/package/koa-ctx-paginate
 [license-image]: http://img.shields.io/badge/license-MIT-blue.svg?style=flat
 [license-url]: LICENSE
-[slack-url]: http://slack.eskimo.io/
-[slack-image]: http://slack.eskimo.io/badge.svg
+[slack-url]: http://slack.crocodilejs.com/
+[slack-image]: http://slack.crocodilejs.com/badge.svg
