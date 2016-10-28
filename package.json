@@ -1,7 +1,7 @@
 {
   "name": "koa-ctx-paginate",
   "description": "Koa pagination middleware and view helpers",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Nick Baugh <niftylettuce@gmail.com>",
   "bugs": {
     "url": "https://github.com/koajs/ctx-paginate/issues"
@@ -32,7 +32,7 @@
     "pagination"
   ],
   "license": "MIT",
-  "main": "./index.js",
+  "main": "lib/index.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/koajs/ctx-paginate.git"
