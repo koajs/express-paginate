@@ -149,7 +149,7 @@ router.get('/users', async function (ctx, next) {
       };
     } else {
       ctx.render('users', {
-        users,
+        users: results,
         pageCount,
         itemCount,
         pages: paginate.getArrayPages(ctx)(3, pageCount, ctx.query.page),
