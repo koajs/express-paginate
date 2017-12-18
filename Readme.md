@@ -1,4 +1,3 @@
-
 # ctx-paginate
 
 [![NPM Version][npm-image]][npm-url]
@@ -8,13 +7,11 @@
 
 > Koa pagination middleware and view helpers.
 
-
 ## Install
 
-```bash
+```sh
 npm install -s koa-ctx-paginate
 ```
-
 
 ## Usage
 
@@ -30,7 +27,6 @@ import * as paginate from 'koa-ctx-paginate';
 import { middleware } from 'koa-ctx-paginate';
 ```
 
-
 ## API
 
 ### paginate.middleware(limit, maxLimit)
@@ -39,9 +35,8 @@ This middleware validates and supplies default values to `ctx.paginate.skip` (an
 
 #### Arguments
 
-* `limit` a Number to limit results returned per page (defaults to `10`)
-* `maxLimit` a Number to restrict the number of results returned to per page (defaults to `50`) &ndash; through this, users will not be able to override this limit (e.g. they can't pass `?limit=10000` and crash your server)
-
+-   `limit` a Number to limit results returned per page (defaults to `10`)
+-   `maxLimit` a Number to restrict the number of results returned to per page (defaults to `50`) – through this, users will not be able to override this limit (e.g. they can't pass `?limit=10000` and crash your server)
 
 ### paginate.href(ctx)
 
@@ -57,7 +52,7 @@ The argument `params` is an Object and is completely optional.
 
 Pass `true` as the value for `prev` when you want to create a `<button>` or `<a>` that points to the previous page (e.g. it would generate a URL such as the one in the `href` attribute of `<a href="/users?page=1&limit=10">Prev</a>` if `ctx.query.page` is `2`).
 
-Pass an object for the value of `params` when you want to override querystring parameters &ndash; such as for filtering and sorting (e.g. it would generate a URL such as the one in the `href` attribute of `<a href="/users?page=1&limit=10&sort=name">Sort By Name</a>` if `params` is equal to `{ sort: 'name' }`.
+Pass an object for the value of `params` when you want to override querystring parameters – such as for filtering and sorting (e.g. it would generate a URL such as the one in the `href` attribute of `<a href="/users?page=1&limit=10&sort=name">Sort By Name</a>` if `params` is equal to `{ sort: 'name' }`.
 
 Note that if you pass only one argument with a type of Object, then it will generate a `href` with the current page and use the first argument as the value for `params`.  This is useful if you only want to do something like change the filter or sort querystring param, but not increase or decrease the page number.
 
@@ -65,21 +60,20 @@ Note that if you pass only one argument with a type of Object, then it will gene
 
 #### Arguments
 
-* `ctx` (**required**) &ndash; the request object returned from Koa middleware invocation
+-   `ctx` (**required**) – the request object returned from Koa middleware invocation
 
 #### Returned function arguments when invoked with `ctx`
 
-* `prev` (optional) &ndash; a Boolean to determine whether or not to increment the hyperlink returned by `1` (e.g. for "Next" page links)
-* `params` (optional) &ndash; an Object of querystring parameters that will override the current querystring in `ctx.query` (note that this will also override the `page` querystring value if `page` is present as a key in the `params` object) (e.g. if you want to make a link that allows the user to change the current querystring to sort by name, you would have `params` equal to `{ sort: 'name' }`)
+-   `prev` (optional) – a Boolean to determine whether or not to increment the hyperlink returned by `1` (e.g. for "Next" page links)
+-   `params` (optional) – an Object of querystring parameters that will override the current querystring in `ctx.query` (note that this will also override the `page` querystring value if `page` is present as a key in the `params` object) (e.g. if you want to make a link that allows the user to change the current querystring to sort by name, you would have `params` equal to `{ sort: 'name' }`)
 
 ### paginate.hasPreviousPages
 
-When you use the `paginate` middleware, it injects a view helper Boolean called `hasPreviousPages` as `ctx.state.hasPreviousPages`, which you can use in your views for generating pagination `<a>`'s or `<button>`'s &ndash; this utilizes `ctx.query.page > 1` to determine the Boolean's resulting value (representing if the query has a previous page of results)
-
+When you use the `paginate` middleware, it injects a view helper Boolean called `hasPreviousPages` as `ctx.state.hasPreviousPages`, which you can use in your views for generating pagination `<a>`'s or `<button>`'s – this utilizes `ctx.query.page > 1` to determine the Boolean's resulting value (representing if the query has a previous page of results)
 
 ### paginate.hasNextPages(ctx)
 
-When you use the `paginate` middleware, it injects a view helper function called `hasNextPages` as `ctx.state.hasPreviousPages`, which you can use in your views for generating pagination `<a>`'s or `<button>`'s &ndash; if the function is executed, it returns a Boolean value (representing if the query has another page of results)
+When you use the `paginate` middleware, it injects a view helper function called `hasNextPages` as `ctx.state.hasPreviousPages`, which you can use in your views for generating pagination `<a>`'s or `<button>`'s – if the function is executed, it returns a Boolean value (representing if the query has another page of results)
 
 By default, the view helper `paginate.hasNextPages` is already executed with the inherited `ctx` variable, therefore it becomes a function capable of returning a Boolean when executed.
 
@@ -87,11 +81,11 @@ When executed with `ctx`, it will return a function that accepts two required ar
 
 #### Arguments
 
-* `ctx` (**required**) &ndash; the request object returned from Koa middleware invocation
+-   `ctx` (**required**) – the request object returned from Koa middleware invocation
 
 #### Returned function arguments when invoked with `ctx`
 
-* `pageCount` (**required**) &ndash; a Number representing the total number of pages for the given query executed on the page
+-   `pageCount` (**required**) – a Number representing the total number of pages for the given query executed on the page
 
 ### paginate.getArrayPages(ctx)
 
@@ -100,19 +94,17 @@ Get all the page urls with limit.
 
 #### Arguments
 
-* `ctx` (**required**) &ndash; the request object returned from Koa middleware invocation
+-   `ctx` (**required**) – the request object returned from Koa middleware invocation
 
 #### Returned function arguments when invoked with `ctx`
 
-* `limit` (**optional**) &ndash; Default: 3, a Number representing the total number of pages for the given query executed on the page.
-* `pageCount` (**required**) &ndash; a Number representing the total number of pages for the given query executed on the page.
-* `currentPage` (**required**) &ndash; a Number representing the current page.
-
+-   `limit` (**optional**) – Default: 3, a Number representing the total number of pages for the given query executed on the page.
+-   `pageCount` (**required**) – a Number representing the total number of pages for the given query executed on the page.
+-   `currentPage` (**required**) – a Number representing the current page.
 
 ## Example
 
 ```js
-
 // # app.js
 
 import koa from 'koa';
@@ -152,8 +144,7 @@ router.get('/users', async function (ctx, next) {
         users: results,
         pageCount,
         itemCount,
-        pages: paginate.getArrayPages(ctx)(3, pageCount, ctx.query.page),
-        paginate: ctx.state.paginate
+        pages: paginate.getArrayPages(ctx)(3, pageCount, ctx.query.page)
       });
     }
 
@@ -169,7 +160,6 @@ app.listen(3000);
 ```
 
 ```pug
-
 //- users.pug
 
 h1 Users
@@ -191,8 +181,60 @@ ul
 include _paginate
 ```
 
-```pug
+> Bootstrap 4.x (used by [Lad][]):
 
+```pug
+//- _paginate.pug
+
+//- Lad
+//- <https://lad.js.org>
+//-
+//- This examples makes use of Bootstrap 4.x pagination classes and is from Lad
+//-
+if pageCount && pageCount > 0
+  nav(aria-label="Page navigation").d-flex.justify-content-center
+    ul.pagination
+      if paginate.hasPreviousPages
+        li.page-item
+          a.page-link(href=paginate.href(true), aria-label=t('Previous'))
+            span(aria-hidden="true")
+              i.fa.fa-angle-double-left
+            span.sr-only= t('Previous')
+      else
+        li.page-item.disabled
+          span.page-link(aria-label=t('Previous'))
+            span(aria-hidden="true")
+              i.fa.fa-angle-double-left
+            span.sr-only= t('Previous')
+      if pages
+        each page in pages
+          if page.number === 1 && pageCount === 1
+            li.page-item.disabled
+              span.page-link= page.number
+          else
+            if page.number === ctx.query.page
+              li.page-item.active
+                a.page-link(href=page.url)= page.number
+            else
+              li.page-item
+                a.page-link(href=page.url)= page.number
+      if paginate.hasNextPages(pageCount)
+        li.page-item
+          a.page-link(href=paginate.href({ page: ctx.query.page + 1 }), aria-label=t('Next'))
+            span(aria-hidden="true")
+              i.fa.fa-angle-double-right
+            span.sr-only= t('Next')
+      else
+        li.page-item.disabled
+          span.page-link(aria-label=t('Next'))
+            span(aria-hidden="true")
+              i.fa.fa-angle-double-right
+            span.sr-only= t('Next')
+```
+
+> Bootstrap 3.x:
+
+```pug
 //- _paginate.pug
 
 //- This examples makes use of Bootstrap 3.x pagination classes
@@ -215,17 +257,24 @@ if paginate.hasPreviousPages || paginate.hasNextPages(pageCount)
             i.fa.fa-arrow-circle-right
 ```
 
-
 ## License
 
 [MIT][license-url]
 
-
 [npm-image]: https://img.shields.io/npm/v/koa-ctx-paginate.svg?style=flat
+
 [npm-url]: https://npmjs.org/package/koa-ctx-paginate
+
 [downloads-image]: http://img.shields.io/npm/dm/koa-ctx-paginate.svg?style=flat
+
 [downloads-url]: https://npmjs.org/package/koa-ctx-paginate
+
 [license-image]: http://img.shields.io/badge/license-MIT-blue.svg?style=flat
+
 [license-url]: LICENSE
+
 [slack-url]: http://slack.crocodilejs.com/
+
 [slack-image]: http://slack.crocodilejs.com/badge.svg
+
+[lad]: https://lad.js.org
