@@ -66,7 +66,7 @@ export function getArrayPages(ctx) {
 
     if (limit > 0) {
       const end = Math.min(Math.max(currentPage + Math.floor(limit / 2), limit), pageCount);
-      const start = (currentPage < (limit - 1)) ? 1 : (end - limit) + 1;
+      const start = Math.max(1, (currentPage < (limit - 1)) ? 1 : (end - limit) + 1);
       const pages = [];
       for (let i = start; i <= end; i++) {
         pages.push({
