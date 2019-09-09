@@ -273,8 +273,8 @@ if paginate.hasPreviousPages || paginate.hasNextPages(pageCount)
 
 [license-url]: LICENSE
 
-[slack-url]: http://slack.crocodilejs.com/
+[slack-url]: https://slack.crocodilejs.com/
 
-[slack-image]: http://slack.crocodilejs.com/badge.svg
+[slack-image]: https://slack.crocodilejs.com/badge.svg
 
 [lad]: https://lad.js.org
