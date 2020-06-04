@@ -127,7 +127,7 @@ router.get('/users', async function (ctx, next) {
 
     const [ results, itemCount ] = await Promise.all([
       Users.find({}).limit(ctx.query.limit).skip(ctx.paginate.skip).lean().exec(),
-      Users.count({})
+      Users.countDocuments({})
     ]);
 
     const pageCount = Math.ceil(itemCount / ctx.query.limit);
