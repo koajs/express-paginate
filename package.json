@@ -1,7 +1,7 @@
 {
   "name": "koa-ctx-paginate",
   "description": "Koa pagination middleware and view helpers",
-  "version": "0.0.6",
+  "version": "1.0.0",
   "author": "Forward Email LLC",
   "bugs": {
     "url": "https://github.com/koajs/ctx-paginate/issues"
