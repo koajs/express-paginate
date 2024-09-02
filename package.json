@@ -2,24 +2,35 @@
   "name": "koa-ctx-paginate",
   "description": "Koa pagination middleware and view helpers",
   "version": "0.0.6",
-  "author": "Nick Baugh <niftylettuce@gmail.com>",
+  "author": "Forward Email LLC",
   "bugs": {
     "url": "https://github.com/koajs/ctx-paginate/issues"
   },
-  "dependencies": {
-    "lodash.assign": "^4.2.0",
-    "lodash.clone": "^4.5.0",
-    "lodash.isobject": "^3.0.2",
-    "querystring": "^0.2.0"
-  },
+  "contributors": [
+    "Forward Email (https://forwardemail.net)"
+  ],
+  "dependencies": {},
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-preset-crocodile": "^1.0.0",
-    "eslint-config-crocodile": "^1.0.0"
+    "@commitlint/cli": "^19.3.0",
+    "@commitlint/config-conventional": "^19.2.2",
+    "ava": "^5.3.1",
+    "cross-env": "^7.0.3",
+    "eslint": "^8.55.0",
+    "eslint-config-xo-lass": "^2.0.1",
+    "fixpack": "^4.0.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.7",
+    "nyc": "^15.1.0",
+    "remark-cli": "11",
+    "remark-preset-github": "^4.0.4",
+    "xo": "^0.56.0"
   },
   "engines": {
-    "node": ">= 6.x"
+    "node": ">= 16"
   },
+  "files": [
+    "index.js"
+  ],
   "homepage": "https://github.com/koajs/ctx-paginate",
   "keywords": [
     "better",
@@ -32,16 +43,16 @@
     "pagination"
   ],
   "license": "MIT",
-  "main": "lib/index.js",
+  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/koajs/ctx-paginate.git"
   },
   "scripts": {
-    "compile": "rm -rf lib/ && babel -d lib src",
-    "lint": "eslint .",
-    "mocha": "NODE_ENV=test node_modules/.bin/_mocha",
-    "prepublish": "npm run test",
-    "test": "npm run lint && npm run compile"
+    "lint": "xo --fix && remark . -qfo && fixpack",
+    "prepare": "husky install",
+    "pretest": "npm run lint",
+    "test": "npm run test-coverage",
+    "test-coverage": "cross-env NODE_ENV=test nyc ava"
   }
 }

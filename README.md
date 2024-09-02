@@ -1,31 +1,49 @@
-# ctx-paginate
+# [**ctx-paginate**](https://github.com/koajs/ctx-paginate)
 
-[![NPM Version][npm-image]][npm-url]
-[![NPM Downloads][downloads-image]][downloads-url]
-[![MIT License][license-image]][license-url]
-[![Slack][slack-image]][slack-url]
+[![build status](https://github.com/koajs/ctx-paginate/actions/workflows/ci.yml/badge.svg)](https://github.com/koajs/ctx-paginate/actions/workflows/ci.yml)
+[![code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
+[![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
+[![made with lass](https://img.shields.io/badge/made_with-lass-95CC28.svg)](https://lass.js.org)
+[![license](https://img.shields.io/github/license/koajs/ctx-paginate.svg)](LICENSE)
 
-> Koa pagination middleware and view helpers.
+> Koa pagination middleware and view helpers.  Maintained for [Forward Email](https://forwardemail.net) [@forwardemail](https://github.com/forwardemail).
+
+
+## Table of Contents
+
+* [Install](#install)
+* [Usage](#usage)
+* [API](#api)
+  * [paginate.middleware(limit, maxLimit)](#paginatemiddlewarelimit-maxlimit)
+  * [paginate.href(ctx)](#paginatehrefctx)
+  * [paginate.hasPreviousPages](#paginatehaspreviouspages)
+  * [paginate.hasNextPages(ctx)](#paginatehasnextpagesctx)
+  * [paginate.getArrayPages(ctx)](#paginategetarraypagesctx)
+* [Example](#example)
+* [License](#license)
+
 
 ## Install
 
 ```sh
-npm install -s koa-ctx-paginate
+npm install koa-ctx-paginate
 ```
+
 
 ## Usage
 
 > Import every method:
 
 ```js
-import * as paginate from 'koa-ctx-paginate';
+const paginate = require('koa-ctx-paginate');
 ```
 
 > Import selective methods:
 
 ```js
-import { middleware } from 'koa-ctx-paginate';
+const { middleware } = require('koa-ctx-paginate');
 ```
+
 
 ## API
 
@@ -35,8 +53,8 @@ This middleware validates and supplies default values to `ctx.paginate.skip` (an
 
 #### Arguments
 
--   `limit` a Number to limit results returned per page (defaults to `10`)
--   `maxLimit` a Number to restrict the number of results returned to per page (defaults to `50`) – through this, users will not be able to override this limit (e.g. they can't pass `?limit=10000` and crash your server)
+* `limit` a Number to limit results returned per page (defaults to `10`)
+* `maxLimit` a Number to restrict the number of results returned to per page (defaults to `50`) – through this, users will not be able to override this limit (e.g. they can't pass `?limit=10000` and crash your server)
 
 ### paginate.href(ctx)
 
@@ -60,12 +78,12 @@ Note that if you pass only one argument with a type of Object, then it will gene
 
 #### Arguments
 
--   `ctx` (**required**) – the request object returned from Koa middleware invocation
+* `ctx` (**required**) – the request object returned from Koa middleware invocation
 
 #### Returned function arguments when invoked with `ctx`
 
--   `prev` (optional) – a Boolean to determine whether or not to increment the hyperlink returned by `1` (e.g. for "Next" page links)
--   `params` (optional) – an Object of querystring parameters that will override the current querystring in `ctx.query` (note that this will also override the `page` querystring value if `page` is present as a key in the `params` object) (e.g. if you want to make a link that allows the user to change the current querystring to sort by name, you would have `params` equal to `{ sort: 'name' }`)
+* `prev` (optional) – a Boolean to determine whether or not to increment the hyperlink returned by `1` (e.g. for "Next" page links)
+* `params` (optional) – an Object of querystring parameters that will override the current querystring in `ctx.query` (note that this will also override the `page` querystring value if `page` is present as a key in the `params` object) (e.g. if you want to make a link that allows the user to change the current querystring to sort by name, you would have `params` equal to `{ sort: 'name' }`)
 
 ### paginate.hasPreviousPages
 
@@ -81,11 +99,11 @@ When executed with `ctx`, it will return a function that accepts two required ar
 
 #### Arguments
 
--   `ctx` (**required**) – the request object returned from Koa middleware invocation
+* `ctx` (**required**) – the request object returned from Koa middleware invocation
 
 #### Returned function arguments when invoked with `ctx`
 
--   `pageCount` (**required**) – a Number representing the total number of pages for the given query executed on the page
+* `pageCount` (**required**) – a Number representing the total number of pages for the given query executed on the page
 
 ### paginate.getArrayPages(ctx)
 
@@ -94,25 +112,26 @@ Get all the page urls with limit.
 
 #### Arguments
 
--   `ctx` (**required**) – the request object returned from Koa middleware invocation
+* `ctx` (**required**) – the request object returned from Koa middleware invocation
 
 #### Returned function arguments when invoked with `ctx`
 
--   `limit` (**optional**) – Default: 3, a Number representing the total number of pages for the given query executed on the page.
--   `pageCount` (**required**) – a Number representing the total number of pages for the given query executed on the page.
--   `currentPage` (**required**) – a Number representing the current page.
+* `limit` (**optional**) – Default: 3, a Number representing the total number of pages for the given query executed on the page.
+* `pageCount` (**required**) – a Number representing the total number of pages for the given query executed on the page.
+* `currentPage` (**required**) – a Number representing the current page.
+
 
 ## Example
 
 ```js
 // # app.js
 
-import koa from 'koa';
-import Router from 'koa-router';
-import * as paginate from 'koa-ctx-paginate';
+const koa = require('koa');
+const Router = require('koa-router');
+const paginate = require('koa-ctx-paginate');
 
 // e.g. `Users` is a database model created with Mongoose
-import { Users } from '../models';
+const { Users } = require('../models');
 
 const app = koa();
 const router = new Router();
@@ -122,16 +141,12 @@ app.use(paginate.middleware(10, 50));
 
 // let's get paginated list of users
 router.get('/users', async function (ctx, next) {
-
   try {
-
     const [ results, itemCount ] = await Promise.all([
       Users.find({}).limit(ctx.query.limit).skip(ctx.paginate.skip).lean().exec(),
       Users.countDocuments({})
     ]);
-
     const pageCount = Math.ceil(itemCount / ctx.query.limit);
-
     if (ctx.is('json')) {
       // inspired by Stripe's API response for list objects
       ctx.body = {
@@ -147,11 +162,9 @@ router.get('/users', async function (ctx, next) {
         pages: paginate.getArrayPages(ctx)(3, pageCount, ctx.query.page)
       });
     }
-
   } catch (err) {
     ctx.throw(err);
   }
-
 });
 
 app.use(router.routes());
@@ -181,7 +194,7 @@ ul
 include _paginate
 ```
 
-> Bootstrap 4.x (used by [Lad][]):
+> Bootstrap 4.x (used by \[Lad]\[]):
 
 ```pug
 //- _paginate.pug
@@ -257,24 +270,7 @@ if paginate.hasPreviousPages || paginate.hasNextPages(pageCount)
             i.fa.fa-arrow-circle-right
 ```
 
+
 ## License
 
-[MIT][license-url]
-
-[npm-image]: https://img.shields.io/npm/v/koa-ctx-paginate.svg?style=flat
-
-[npm-url]: https://npmjs.org/package/koa-ctx-paginate
-
-[downloads-image]: http://img.shields.io/npm/dm/koa-ctx-paginate.svg?style=flat
-
-[downloads-url]: https://npmjs.org/package/koa-ctx-paginate
-
-[license-image]: http://img.shields.io/badge/license-MIT-blue.svg?style=flat
-
-[license-url]: LICENSE
-
-[slack-url]: https://join.slack.com/t/ladjs/shared_invite/zt-fqei6z11-Bq2trhwHQxVc5x~ifiZG0g/
-
-[slack-image]: https://img.shields.io/badge/chat-join%20slack-brightgreen
-
-[lad]: https://lad.js.org
+[MIT](LICENSE) © Forward Email LLC
